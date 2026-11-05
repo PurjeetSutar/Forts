@@ -5,7 +5,7 @@ import { MapPin, Train, Bus, Car, Footprints, Clock, Sun, Ticket, Utensils, BedD
 import { api } from "@/lib/api";
 import { ART } from "@/lib/constants";
 import { pinIcon, TILE_ATTR, TILE_URL } from "@/lib/mapIcons";
-import { Reveal, SEO, StatusBadge, TypeTag, Loader, FortCard } from "@/components/common";
+import { Reveal, SEO, StatusBadge, Loader, FortCard } from "@/components/common";
 import { FavButton, ShareButtons } from "@/components/Actions";
 import Comments from "@/components/Comments";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -76,7 +76,7 @@ function Gallery({ items }) {
           {open && <><img src={open.url} alt="" className="w-full max-h-[75vh] object-contain bg-black" />
             <div className="p-4 text-xs text-stone-600 space-y-1">
               <p><b>Credit:</b> {open.credit}</p><p><b>Licence:</b> {open.license}</p>
-              {open.source && <p><b>Source:</b> <a className="underline" href={open.source} target="_blank" rel="noreferrer">{open.source}</a></p>}
+              {open.source?.startsWith("http") && <p><b>Source:</b> <a className="underline" href={open.source} target="_blank" rel="noreferrer">{open.source}</a></p>}
               {open.representative && <p className="text-amber-700">Representative image — may not depict this specific fort.</p>}
             </div></>}
         </DialogContent>
@@ -249,7 +249,7 @@ export default function FortDetail() {
         )}
 
         <section id="discussion" className="py-16 border-t border-stone-200 max-w-4xl scroll-mt-32"><Comments slug={f.slug} /></section>
-        <div className="pb-16"><TypeTag type={f.type} /></div>
+        <div className="pb-8" />
       </div>
     </article>
   );

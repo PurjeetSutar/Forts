@@ -40,7 +40,7 @@ body {
 
 .art-wash { mix-blend-mode: multiply; }
 
-.leaflet-container { font-family: 'Manrope', sans-serif; background: #f3f1ee; }
+.leaflet-container { font-family: 'Manrope', sans-serif; background: #f3f1ee; isolation: isolate; z-index: 0; }
 .leaflet-tile-pane { filter: grayscale(1) contrast(.92) brightness(1.06); }
 .fort-pin { border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.35); }
 .leaflet-popup-content-wrapper, .leaflet-popup-tip { border-radius: 0; }

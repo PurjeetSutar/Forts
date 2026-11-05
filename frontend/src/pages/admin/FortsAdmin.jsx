@@ -24,6 +24,7 @@ function Editor({ initial, onClose, onSaved, settings }) {
   const [flags, setFlags] = useState({ featured: !!initial.featured, published: initial.published !== false });
   const [adv, setAdv] = useState(() => Object.fromEntries(ADV_KEYS.map((k) => [k, initial[k] ?? TEMPLATE[k]])));
   const [busy, setBusy] = useState(false);
+  const [jsonKey, setJsonKey] = useState(0);
   const fileRef = useRef();
   const set = (k) => (e) => setBasic((b) => ({ ...b, [k]: e.target.value }));
 
@@ -34,6 +35,7 @@ function Editor({ initial, onClose, onSaved, settings }) {
       const r = await uploadImage(f);
       const url = r.url;
       setAdv((a) => ({ ...a, gallery: [...(a.gallery || []), { url, credit: "", license: "", source: "", representative: false }] }));
+      setJsonKey((k) => k + 1);
       if (!basic.hero_image) setBasic((b) => ({ ...b, hero_image: url }));
       toast.success("Photo uploaded — add credit & licence in the gallery JSON");
     } catch (err) { toast.error(formatErr(err)); }
@@ -71,7 +73,7 @@ function Editor({ initial, onClose, onSaved, settings }) {
         </div>
         <div>
           <p className="text-xs text-stone-500 mb-1">Historical content, timeline (status: documented / tradition / needs_verification), structures, travel info, references & gallery</p>
-          <JsonEditor key={adv?.gallery?.length} value={adv} onChange={setAdv} rows={22} testid="fort-advanced-json" />
+          <JsonEditor key={jsonKey} value={adv} onChange={setAdv} rows={22} testid="fort-advanced-json" />
         </div>
         <div className="flex justify-end gap-2">
           <button onClick={onClose} className="px-4 py-2 border border-stone-300 text-sm">Cancel</button>

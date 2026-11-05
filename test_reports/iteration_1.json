@@ -1,0 +1,56 @@
+{
+  "summary": "First full E2E run of Forts of Maharashtra. Backend: 27 pytest cases (public content, auth incl. cookies/origin guard/lockout/refresh, comments thread/like/report/spam/rate-limit/3-report auto-pending, favourites, itineraries, uploads to object storage, photo submission -> gallery publish, admin RBAC/stats/fort CRUD/story CRUD/users/settings) - 26 pass, 1 fail (brute-force lockout bypassed behind ingress). Frontend (Playwright, desktop + mobile): homepage hero/search/CTAs/stats/carousel/categories, directory (search, all 9 filters, alphabet, grid/list, pagination 12/12/10, clear all), fort detail /forts/raigad (all sections, mini-map, gallery lightbox credit/licence, favourite sign-in toast), comments (post question, reply, like toggle, report dialog, delete own, image comment -> pending -> admin approve), map (34 markers, type toggles, district toggle, search -> preview card w/ Open full profile + nearby, circuit polyline), planner (?add=, add/remove, circuit load, optimise, move up/down, save requires login, save when logged in, localStorage persistence), auth (register, login, wrong password error, logout, Google session cookie via mongo-created session), profile (bucket list, itineraries, submissions, name update), contribute with image upload -> admin approve -> /gallery Community Contributions with attribution, admin (overview charts, add/edit/delete fort, stories list, photo credit+licence enforcement, users role selects, settings save), non-admin /admin shows 'Admin access required', stories/category/detail, community page, about. All core flows work.",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "POST /api/auth/login", "issue": "Brute-force lockout is bypassable/unreliable in deployment. Identifier = request.client.host + email, but client.host is the ingress pod IP which alternates (logs show 10.66.0.11 and 10.66.5.130 for the same client), so 5 failed attempts get split across identifiers and the 6th correct login returns 200 instead of 429 (reproduced 4/4 runs; passed once earlier by chance). Fix: key lockout by email only, or use first IP of X-Forwarded-For.", "priority": "HIGH"}
+    ],
+    "minor": [
+      {"endpoint": "DELETE /api/comments/{cid}", "issue": "Deletes only the comment and its direct replies; grand-child replies (reply to a reply) are orphaned and then surface as root comments via thread()."},
+      {"endpoint": "POST /api/comments/{cid}/report", "issue": "Users can report their own comments; no check c.user_id != u.user_id."},
+      {"endpoint": "POST /api/auth/refresh", "issue": "Issues new access token without checking the user still exists / is not banned."},
+      {"endpoint": "POST /api/submissions", "issue": "images[] paths are not validated against the caller's uploaded files (db.files user_id) - any storage path can be referenced."},
+      {"endpoint": "POST /api/comments/{cid}/like", "issue": "like_count in response computed from stale read (c['like_count'] +/- 1) - can be off under concurrent likes (cosmetic)."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Admin FortsAdmin Editor -> JsonEditor", "issue": "Any momentarily-invalid JSON (a single typo while editing) WIPES the entire advanced JSON textarea. Cause: <JsonEditor key={adv?.gallery?.length} ...>; on parse error onChange(undefined) sets adv=undefined -> key changes -> component remounts with JSON.stringify(undefined) -> textarea empty. Reproduced: typed one char at end of 936-char JSON -> textarea length 0. Fix: use a stable key (e.g. a counter bumped only in addPhoto) and don't remount on invalid state.", "selector": "[data-testid='fort-advanced-json']", "priority": "HIGH"},
+      {"component": "Gallery lightbox", "issue": "Source is always rendered as <a href={source}>; for community photos source='Community submission' -> broken relative link. Only link when source starts with http.", "selector": "[data-testid='photo-lightbox']", "priority": "LOW"},
+      {"component": "Comments pending note", "issue": "Grammar: '1 of your posts are awaiting moderation' -> pluralise.", "selector": "[data-testid='pending-note']", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Fort detail", "issues": ["Stray <TypeTag> ('HILL FORT') rendered alone at the very bottom of the article after the discussion - looks orphaned", "Discussion section is max-w-4xl leaving large empty right column on desktop"]},
+      {"screen": "Map (desktop)", "issues": ["Preview card is flush against the header (top edge clipped/touching) - add top margin"]},
+      {"screen": "Map (mobile 390px)", "issues": ["Filter panel is open by default and covers ~75% of the map; should start collapsed on mobile"]},
+      {"screen": "Header (mobile 390px)", "issues": ["Logo wraps to 2 lines and 'SIGN IN' button wraps to 2 lines - cramped; reduce sizes or hide button into menu"]},
+      {"screen": "Planner (mobile 390px)", "issues": ["Horizontal overflow: scrollWidth 399 > 390"]},
+      {"screen": "Planner circuits row (desktop)", "issues": ["Circuit cards have uneven widths and the Satara card's content is vertically offset vs others"]},
+      {"screen": "Dialogs (gallery lightbox)", "issues": ["Site header stays un-dimmed above the modal overlay (z-index higher than overlay)"]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_forts_api.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "HIGH: Fix login lockout identifier (use email only or X-Forwarded-For first IP) so 5 failed attempts reliably lock the account",
+    "HIGH: Fix FortsAdmin JsonEditor remount (key={adv?.gallery?.length}) that wipes JSON on any typo",
+    "Delete comment should cascade to all descendants (or delete by thread root)",
+    "Disallow reporting own comment; check user/banned on /auth/refresh; validate submission image paths belong to user",
+    "Gallery lightbox: only render source as link if it is a URL",
+    "Design: remove stray TypeTag at end of fort detail, collapse map panel on mobile, fix mobile header wrapping, planner mobile overflow, map preview card top spacing"
+  ],
+  "critical_code_review_comments": [
+    "server.py is 1007 lines - split into routers (auth, forts, comments, admin, seed)",
+    "seed_data.py 850 lines (data) acceptable but could be JSON",
+    "Admin endpoints accept raw request.json() for forts/stories/photos/settings/circuits without Pydantic models (only minimal checks) - e.g. lat/lng float() on bad input raises 500",
+    "login lockout increments count forever and resets locked_until on every failure (sliding window) - fine but combined with per-proxy-IP identifier ineffective",
+    "seed_admin correctly creates admin only if missing and never resets password; bcrypt hashes start with $2b$; cookies httpOnly+secure+SameSite=None verified; CORS uses explicit origins from env"
+  ],
+  "updated_files": ["/app/backend/tests/test_forts_api.py", "/app/frontend/src/pages/admin/ContentAdmin.jsx (added data-testid admin-story-edit-<slug>/admin-story-delete-<slug>)"],
+  "success_rate": {"backend": "96% (26/27)", "frontend": "95% (all requested flows functional; 1 high admin editor bug + minor/design issues)"},
+  "test_credentials": "Admin admin@fortsofmaharashtra.in / FortAdmin@2026 (from /app/memory/test_credentials.md) works. Test UI user test_ui_88568@example.com / test1234 (display name 'TEST UI Renamed').",
+  "seed_data_creation": "Created TEST_ users via register (test_*@example.com, test_ui_88568@example.com) and one TEST_UI photograph submission (approved). All TEST comments, photos, itineraries, forts, stories, favourites and the mongo-created Google test user/session were deleted. Note: I reported main agent's smoke comment c_cc9aad9d1c9b once, then reset via admin approve (reports cleared). Admin 'Save settings' was clicked once (round-trip of existing values). Raigad view count increased from test visits.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run pytest /app/backend/tests/test_forts_api.py (27 tests). test_brute_force_lockout currently fails due to ingress IP identifier bug. Google auth tested by inserting user+user_sessions in mongo (test_database) and setting session_token cookie. Retest: lockout fix, FortsAdmin JSON editor typo (type one stray char in [data-testid=fort-advanced-json] and confirm content persists), mobile map panel/header. Comments rate limit 5/10min per user - use fresh users per test.",
+  "rca of the issue": "Lockout: login() builds ident from request.client.host; uvicorn behind k8s ingress sees ingress pod IPs (10.66.0.11 / 10.66.5.130 alternating) -> failed-attempt counter split across 2 docs, count never reaches 5 for either. JSON editor: FortsAdmin passes key={adv?.gallery?.length}; invalid JSON -> onChange(undefined) -> adv undefined -> key 0->undefined -> remount -> useState(JSON.stringify(undefined)) -> empty textarea, user edits lost."
+}

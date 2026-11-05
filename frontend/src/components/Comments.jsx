@@ -121,7 +121,7 @@ export default function Comments({ slug }) {
         </div>
       </div>
       {user ? <Composer slug={slug} onDone={load} /> : <SignInPrompt />}
-      {data.my_pending > 0 && <p className="text-xs text-stone-500 mt-3" data-testid="pending-note">{data.my_pending} of your posts are awaiting moderation.</p>}
+      {data.my_pending > 0 && <p className="text-xs text-stone-500 mt-3" data-testid="pending-note">{data.my_pending === 1 ? "1 of your posts is" : `${data.my_pending} of your posts are`} awaiting moderation.</p>}
       <ul className="mt-6" data-testid="comments-list">
         {items.length === 0 && <li className="py-10 text-stone-500 text-sm">No posts yet — be the first to share.</li>}
         {items.map((c) => <CommentItem key={c.comment_id} c={c} slug={slug} reload={load} onReport={setReporting} />)}

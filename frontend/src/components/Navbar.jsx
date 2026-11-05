@@ -11,7 +11,7 @@ function UserMenu() {
   const nav = useNavigate();
   if (!user) {
     return (
-      <Link to="/login" data-testid="nav-login-btn" className="text-xs uppercase tracking-[0.2em] font-semibold px-4 py-2 bg-[#E87524] text-white hover:bg-[#cf661d] transition-colors">
+      <Link to="/login" data-testid="nav-login-btn" className="whitespace-nowrap text-[11px] sm:text-xs uppercase tracking-[0.15em] sm:tracking-[0.2em] font-semibold px-3 sm:px-4 py-2 bg-[#E87524] text-white hover:bg-[#cf661d] transition-colors">
         Sign in
       </Link>
     );
@@ -65,11 +65,11 @@ export default function Navbar() {
 
   const tone = overHero ? "text-white" : "text-[#252525]";
   return (
-    <header data-testid="site-header" className={`fixed top-0 inset-x-0 z-[1000] transition-[background-color,box-shadow] duration-500 ${overHero ? "bg-gradient-to-b from-black/50 to-transparent" : "bg-white/85 backdrop-blur-xl border-b border-black/5"}`}>
+    <header data-testid="site-header" className={`fixed top-0 inset-x-0 z-[45] transition-[background-color,box-shadow] duration-500 ${overHero ? "bg-gradient-to-b from-black/50 to-transparent" : "bg-white/85 backdrop-blur-xl border-b border-black/5"}`}>
       <div className={`flex items-center justify-between px-6 md:px-12 lg:px-16 h-16 ${tone}`}>
         <Link to="/" data-testid="nav-logo" className="flex items-center gap-3">
           <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden><path d="M3 28V14l4-3 3 3V9l3-3 3 3 3-3 3 3v5l3-3 4 3v14z" fill="none" stroke="#E87524" strokeWidth="2" /><path d="M13 28v-6a3 3 0 0 1 6 0v6" fill="none" stroke="#E87524" strokeWidth="2" /></svg>
-          <span className="font-display text-lg tracking-wide leading-none">Forts <em className="text-[#E87524] not-italic">of</em> Maharashtra</span>
+          <span className="font-display text-[15px] sm:text-lg tracking-wide leading-none whitespace-nowrap">Forts <em className="text-[#E87524] not-italic">of</em> Maharashtra</span>
         </Link>
         <nav className="hidden lg:flex items-center gap-7">
           {NAV.map((n) => (
@@ -77,7 +77,7 @@ export default function Navbar() {
               className={({ isActive }) => `text-[13px] font-medium link-reveal pb-0.5 ${isActive ? "text-[#E87524]" : ""}`}>{n.label}</NavLink>
           ))}
         </nav>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           <div className="hidden md:block"><LangMenu /></div>
           <Link to="/contribute" data-testid="nav-contribute" className="hidden md:inline text-[13px] font-medium link-reveal">Contribute</Link>
           <UserMenu />

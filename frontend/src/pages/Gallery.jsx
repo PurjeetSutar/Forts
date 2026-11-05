@@ -50,7 +50,7 @@ export default function Gallery() {
               <div><p className="eyebrow text-stone-400">Title</p><p className="mt-1">{open.title}</p></div>
               <div><p className="eyebrow text-stone-400">Credit</p><p className="mt-1">{open.credit}</p></div>
               <div><p className="eyebrow text-stone-400">Licence</p><p className="mt-1">{open.license}</p></div>
-              <div><p className="eyebrow text-stone-400">Source</p><p className="mt-1">{open.source ? <a href={open.source} target="_blank" rel="noreferrer" className="underline">{open.source}</a> : "—"}</p></div>
+              <div><p className="eyebrow text-stone-400">Source</p><p className="mt-1">{open.source?.startsWith("http") ? <a href={open.source} target="_blank" rel="noreferrer" className="underline">{open.source}</a> : open.source || "—"}</p></div>
               {open.representative && <p className="sm:col-span-4 text-amber-700">Representative image — location not independently verified.</p>}
             </div></>}
         </DialogContent>

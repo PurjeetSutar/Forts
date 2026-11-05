@@ -80,7 +80,7 @@ export default function Planner() {
   const options = forts.filter((f) => !q || `${f.name} ${f.district}`.toLowerCase().includes(q.toLowerCase()));
 
   return (
-    <div data-testid="planner-page">
+    <div data-testid="planner-page" className="overflow-x-hidden">
       <SEO title="Fort Trip Planner" description="Select multiple forts, build a day-by-day itinerary and explore suggested fort circuits across Maharashtra." />
       <PageHero eyebrow="Tour guide & travel planner" title="Build your fort expedition" art={ART.panorama}>
         Choose forts, let us order them by distance and split them into realistic days. Distances are straight-line estimates — always confirm road routes and local conditions.
@@ -91,7 +91,7 @@ export default function Planner() {
         <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2" data-testid="planner-circuits">
           {circuits.map((c) => (
             <button key={c.slug} onClick={() => { setSel(c.forts); setTitle(c.name); }} data-testid={`planner-circuit-${c.slug}`}
-              className="min-w-[260px] text-left border border-stone-200 p-6 hover:border-[#E87524] transition-colors">
+              className="w-[280px] shrink-0 self-stretch flex flex-col justify-start text-left border border-stone-200 p-6 hover:border-[#E87524] transition-colors">
               <p className="text-xs uppercase tracking-[0.18em] text-stone-500">{c.region} · {c.days} days</p>
               <h3 className="font-display text-xl mt-2">{c.name}</h3>
               <p className="text-sm text-stone-600 mt-2 line-clamp-2">{c.desc}</p>
@@ -118,7 +118,7 @@ export default function Planner() {
 
         <div className="lg:col-span-8">
           <div className="flex flex-wrap gap-3 items-center justify-between mb-8">
-            <input value={title} onChange={(e) => setTitle(e.target.value)} className="font-display text-3xl md:text-4xl outline-none border-b border-transparent focus:border-[#E87524] bg-transparent flex-1 min-w-[200px]" data-testid="planner-title" />
+            <input value={title} onChange={(e) => setTitle(e.target.value)} className="font-display text-3xl md:text-4xl outline-none border-b border-transparent focus:border-[#E87524] bg-transparent flex-1 min-w-0 w-full sm:w-auto" data-testid="planner-title" />
             <div className="flex gap-2">
               <button onClick={() => setSel(optimise(stops).map((s) => s.slug))} disabled={stops.length < 3} className="px-4 py-2.5 border border-[#252525] text-xs uppercase tracking-[0.18em] inline-flex items-center gap-2 disabled:opacity-30 hover:bg-[#252525] hover:text-white" data-testid="planner-optimise-btn"><Wand2 className="w-4 h-4" />Optimise route</button>
               <button onClick={save} disabled={!stops.length} className="px-4 py-2.5 bg-[#E87524] text-white text-xs uppercase tracking-[0.18em] inline-flex items-center gap-2 disabled:opacity-30 hover:bg-[#cf661d]" data-testid="planner-save-btn"><Save className="w-4 h-4" />Save</button>

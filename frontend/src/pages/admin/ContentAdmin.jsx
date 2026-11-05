@@ -33,8 +33,8 @@ export function StoriesAdmin() {
           <div key={s.slug} className="flex items-center gap-4 p-4" data-testid={`admin-story-${s.slug}`}>
             <img src={s.cover} alt="" className="w-16 h-12 object-cover" />
             <div className="flex-1"><p className="font-medium">{s.title}</p><p className="text-xs text-stone-500">{s.category} · {s.status} · {s.published ? "published" : "draft"}</p></div>
-            <button onClick={() => open(s)} aria-label="Edit" className="p-1.5 hover:text-[#E87524]"><Pencil className="w-4 h-4" /></button>
-            <button onClick={() => del(s.slug)} aria-label="Delete" className="p-1.5 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
+            <button onClick={() => open(s)} aria-label="Edit" className="p-1.5 hover:text-[#E87524]" data-testid={`admin-story-edit-${s.slug}`}><Pencil className="w-4 h-4" /></button>
+            <button onClick={() => del(s.slug)} aria-label="Delete" className="p-1.5 hover:text-red-600" data-testid={`admin-story-delete-${s.slug}`}><Trash2 className="w-4 h-4" /></button>
           </div>
         ))}
       </div>

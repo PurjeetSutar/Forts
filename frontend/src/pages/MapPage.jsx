@@ -16,7 +16,7 @@ function FlyTo({ target }) {
 function Preview({ f, all, onClose, onPick }) {
   const nearby = all.filter((x) => x.slug !== f.slug).map((x) => ({ ...x, d: distanceKm(f, x) })).sort((a, b) => a.d - b.d).slice(0, 3);
   return (
-    <div className="absolute z-[500] right-4 bottom-4 md:right-6 md:top-6 md:bottom-auto w-[calc(100%-2rem)] md:w-[360px] bg-white/90 backdrop-blur-xl border border-white/60 shadow-[0_10px_40px_rgba(0,0,0,0.15)]" data-testid="map-preview-card">
+    <div className="absolute z-[500] right-4 bottom-4 md:right-6 md:top-24 md:bottom-auto w-[calc(100%-2rem)] md:w-[360px] bg-white/90 backdrop-blur-xl border border-white/60 shadow-[0_10px_40px_rgba(0,0,0,0.15)]" data-testid="map-preview-card">
       <button onClick={onClose} className="absolute top-2 right-2 z-10 bg-white/90 p-1" aria-label="Close" data-testid="map-preview-close"><X className="w-4 h-4" /></button>
       <img src={f.hero_image} alt={f.name} className="w-full h-40 object-cover" />
       <div className="p-5">
@@ -41,7 +41,7 @@ export default function MapPage() {
   const [showDistricts, setShowDistricts] = useState(true);
   const [sel, setSel] = useState(null);
   const [circuit, setCircuit] = useState(null);
-  const [panel, setPanel] = useState(true);
+  const [panel, setPanel] = useState(() => window.innerWidth >= 768);
 
   useEffect(() => {
     api.get("/forts/map").then((r) => setForts(r.data));
@@ -54,7 +54,7 @@ export default function MapPage() {
   const toggleType = (t) => setTypes((x) => (x.includes(t) ? x.filter((y) => y !== t) : [...x, t]));
 
   return (
-    <div className="relative h-[100svh] pt-16" data-testid="map-page">
+    <div className="relative h-[100svh] pt-16 isolate" data-testid="map-page">
       <SEO title="Interactive Fort Map" description="Explore the forts of Maharashtra on an interactive map with district boundaries, filters and suggested circuits." />
       <MapContainer center={[18.9, 75.5]} zoom={7} minZoom={6} maxBounds={[[14.5, 70], [23, 82]]} className="w-full h-full" zoomControl={false}>
         <TileLayer url={TILE_URL} attribution={TILE_ATTR + " · District boundaries: Census 2011 (pre-2014; Palghar shown within Thane)"} />

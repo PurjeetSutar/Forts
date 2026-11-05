@@ -252,7 +252,7 @@ async def register(body: RegisterIn, response: Response):
 @api.post("/auth/login")
 async def login(body: LoginIn, request: Request, response: Response):
     email = body.email.lower()
-    ident = f"{request.client.host if request.client else 'x'}:{email}"
+    ident = f"login:{email}"
     att = await db.login_attempts.find_one({"identifier": ident})
     if att and att.get("count", 0) >= 5 and att.get("locked_until") and datetime.fromisoformat(att["locked_until"]) > now():
         raise HTTPException(429, "Too many failed attempts. Try again in 15 minutes.")
@@ -302,6 +302,9 @@ async def refresh(request: Request, response: Response):
         raise HTTPException(401, "Invalid refresh token")
     if p.get("type") != "refresh":
         raise HTTPException(401, "Invalid token type")
+    u = await db.users.find_one({"user_id": p["sub"]}, {"_id": 0, "user_id": 1, "banned": 1})
+    if not u or u.get("banned"):
+        raise HTTPException(401, "User not available")
     response.set_cookie("access_token", make_token(p["sub"], "access", timedelta(minutes=60)), httponly=True, secure=True, samesite="none", max_age=3600, path="/")
     return {"ok": True}
 
@@ -564,6 +567,7 @@ async def post_comment(slug: str, body: CommentIn, u=Depends(current_user)):
         raise HTTPException(429, "You're posting too fast. Please wait a few minutes.")
     if body.parent_id and not await db.comments.find_one({"comment_id": body.parent_id, "fort_slug": slug}):
         raise HTTPException(400, "Parent comment not found")
+    body.images = await own_paths(body.images[:4], u["user_id"])
     text = body.text.strip()
     low = text.lower()
     suspicious = len(re.findall(r"https?://", low)) > 1 or any(w in low for w in SPAM_WORDS)
@@ -584,9 +588,12 @@ async def like_comment(cid: str, u=Depends(current_user)):
         raise HTTPException(404, "Not found")
     if u["user_id"] in c.get("likes", []):
         await db.comments.update_one({"comment_id": cid}, {"$pull": {"likes": u["user_id"]}, "$inc": {"like_count": -1}})
-        return {"liked": False, "like_count": c["like_count"] - 1}
-    await db.comments.update_one({"comment_id": cid}, {"$addToSet": {"likes": u["user_id"]}, "$inc": {"like_count": 1}})
-    return {"liked": True, "like_count": c["like_count"] + 1}
+        liked = False
+    else:
+        await db.comments.update_one({"comment_id": cid}, {"$addToSet": {"likes": u["user_id"]}, "$inc": {"like_count": 1}})
+        liked = True
+    n = await db.comments.find_one({"comment_id": cid}, {"_id": 0, "like_count": 1})
+    return {"liked": liked, "like_count": n["like_count"]}
 
 
 @api.post("/comments/{cid}/report")
@@ -594,6 +601,8 @@ async def report_comment(cid: str, body: ReportIn, u=Depends(current_user)):
     c = await db.comments.find_one({"comment_id": cid})
     if not c:
         raise HTTPException(404, "Not found")
+    if c["user_id"] == u["user_id"]:
+        raise HTTPException(400, "You cannot report your own post")
     if u["user_id"] in c.get("reporters", []):
         return {"ok": True, "already": True}
     upd = {"$addToSet": {"reporters": u["user_id"]}, "$inc": {"report_count": 1}, "$push": {"report_reasons": body.reason}}
@@ -608,7 +617,12 @@ async def delete_own_comment(cid: str, u=Depends(current_user)):
     c = await db.comments.find_one({"comment_id": cid})
     if not c or (c["user_id"] != u["user_id"] and u.get("role") != "admin"):
         raise HTTPException(404, "Not found")
-    await db.comments.delete_many({"$or": [{"comment_id": cid}, {"parent_id": cid}]})
+    ids, frontier = [cid], [cid]
+    while frontier:
+        kids = await db.comments.find({"parent_id": {"$in": frontier}}, {"_id": 0, "comment_id": 1}).to_list(1000)
+        frontier = [k["comment_id"] for k in kids]
+        ids += frontier
+    await db.comments.delete_many({"comment_id": {"$in": ids}})
     return {"ok": True}
 
 
@@ -677,8 +691,17 @@ async def my_subs(u=Depends(current_user)):
 
 
 # ---------- submissions ----------
+async def own_paths(paths, uid):
+    if not paths:
+        return []
+    ok = await db.files.find({"storage_path": {"$in": paths}, "user_id": uid, "is_deleted": False}, {"_id": 0, "storage_path": 1}).to_list(50)
+    okset = {o["storage_path"] for o in ok}
+    return [p for p in paths if p in okset]
+
+
 @api.post("/submissions")
 async def submit(body: SubmissionIn, u=Depends(current_user)):
+    body.images = await own_paths(body.images[:8], u["user_id"])
     s = {"submission_id": f"s_{uuid.uuid4().hex[:10]}", "user_id": u["user_id"], "user_name": u["name"], "user_email": u["email"],
          **body.model_dump(), "images": [f"/api/files/{p}" for p in body.images[:8]], "status": "pending", "admin_note": None, "created_at": iso()}
     await db.submissions.insert_one(s)
