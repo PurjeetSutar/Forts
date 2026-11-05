@@ -1,0 +1,113 @@
+{
+  "theme": "light",
+  "colors": {
+    "primary": "#252525",
+    "secondary": "#E87524",
+    "background": "#FFFFFF",
+    "surface": "#F9F9F9",
+    "text_main": "#252525",
+    "text_muted": "#555555",
+    "border": "#E5E5E5",
+    "accent_orange": "#E87524",
+    "dark_charcoal": "#252525",
+    "pure_white": "#FFFFFF"
+  },
+  "typography": {
+    "headings": {
+      "family": "Playfair Display, serif",
+      "weights": ["400", "600", "700"],
+      "styles": "Elegant, tight tracking for large sizes, classic editorial feel."
+    },
+    "body": {
+      "family": "Manrope, sans-serif",
+      "weights": ["400", "500"],
+      "styles": "Clean, highly readable, modern contrast to the serif headings."
+    },
+    "labels": {
+      "styles": "Uppercase, wide tracking (tracking-[0.2em]), tiny text for overlines and tags."
+    }
+  },
+  "visual_enhancers": {
+    "textures": "Subtle paper grain or noise overlay to give an archival, historic museum feel.",
+    "borders": "1px solid #E5E5E5 for cards and grids to provide structured, magazine-like layouts.",
+    "shadows": "Very subtle, diffuse ambient shadows (shadow-sm or custom 0 4px 20px rgba(0,0,0,0.05)). Avoid heavy dropshadows.",
+    "glassmorphism": "Use sparingly. For sticky headers or map overlays: backdrop-blur-xl bg-white/80 with 1px border-white/40.",
+    "artistic_elements": "Incorporate sketch-style architectural drawings and ink-style illustrations subtly in the background or as section transitions."
+  },
+  "layouts": {
+    "spacing": "Generous whitespace. Use py-20, py-24, or py-32 for section padding. Container padding should be px-6 md:px-12 lg:px-24.",
+    "grids": "Use 'The Swiss Grid' - asymmetrical, content-led layouts. Mix wide hero images with narrow text columns.",
+    "cards": "Flat, rectangular, 1px border, no radius (rounded-none) or very subtle (rounded-sm) for a premium editorial look. Avoid generic rounded SaaS cards."
+  },
+  "motion": {
+    "scrolling": "Smooth scrolling using Lenis to give weight and premium feel.",
+    "transitions": "Slow, elegant fade-ins and slide-ups (duration 0.6s to 1s).",
+    "interactions": "Hover states on images: slow scale-up (scale-105) with image filter changes (e.g., grayscale to color). Text links underline reveal."
+  },
+  "pages": {
+    "Homepage": "Full-screen cinematic hero image with dark overlay (bg-black/30), massive elegant typography (FORTS OF MAHARASHTRA), orange accent search bar. Followed by bento-style animated stats, a carousel of featured forts, and a vertical timeline section.",
+    "Fort Directory": "Clean grid/list toggle. Left sidebar for detailed filters (district, region, type). Cards should focus on photography with elegant typography underneath. 'Explore More' CTA in Burnt Orange.",
+    "Fort Detail": "Immersive editorial layout. Massive hero image. Content split into distinct sections: Documented History vs Legends (clearly marked). Include fact cards, timeline, architectural sketches, and a stylized map. Comment section at the bottom.",
+    "Interactive Map": "Full-width Leaflet/OSM map. Custom Burnt Orange markers. Floating glassmorphic preview cards when clicking markers.",
+    "Travel Planner": "Interactive itinerary builder. Select forts from a list, drag-and-drop timeline, exportable summary.",
+    "Stories": "Long-form editorial articles. Narrow reading column (max-w-2xl), large drop caps, pull quotes in Burnt Orange, high-res inline images.",
+    "Admin Dashboard": "Dense, clean, high-contrast utility layout. Dark Charcoal side nav, white content area. Standard Shadcn tables and forms."
+  },
+  "components": {
+    "buttons": "Rectangular, sharp edges (rounded-none). Primary: bg-[#E87524] text-white hover:bg-[#cf661d]. Secondary: outline border-[#252525] text-[#252525] hover:bg-[#252525] hover:text-white.",
+    "inputs": "Minimalist. border-b only or very subtle 1px full border. Focus state: border-[#E87524] ring-0.",
+    "badges": "For tags (e.g., 'Legend', 'Fact', 'Hill Fort'): text-xs uppercase tracking-widest bg-gray-100 text-gray-800 px-2 py-1.",
+    "shadcn_overrides": "Remove heavy border radii. Adjust focus rings to Burnt Orange."
+  },
+  "media": {
+    "image_urls": {
+      "hero_cinematic": [
+        "https://images.unsplash.com/photo-1709620537653-055f491fe2a0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHwyfHxtYWhhcmFzaHRyYSUyMGZvcnQlMjBjaW5lbWF0aWN8ZW58MHx8fHwxNzkzODUxOTY2fDA&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1589644873574-345111273e9b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHw0fHxtYWhhcmFzaHRyYSUyMGZvcnQlMjBjaW5lbWF0aWN8ZW58MHx8fHwxNzkzODUxOTY2fDA&ixlib=rb-4.1.0&q=85"
+      ],
+      "architectural_sketches": [
+        "https://images.unsplash.com/photo-1753802025065-e9d71f6c0d95?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MjJ8MHwxfHNlYXJjaHwyfHxoaXN0b3JpYyUyMGZvcnQlMjBhcmNoaXRlY3R1cmUlMjBza2V0Y2h8ZW58MHx8fHwxNzkzODUxOTY2fDA&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1717445130415-d43ebd8fed1c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MjJ8MHwxfHNlYXJjaHwxfHxoaXN0b3JpYyUyMGZvcnQlMjBhcmNoaXRlY3R1cmUlMjBza2V0Y2h8ZW58MHx8fHwxNzkzODUxOTY2fDA&ixlib=rb-4.1.0&q=85"
+      ],
+      "map_parchment": [
+        "https://images.unsplash.com/photo-1520299607509-dcd935f9a839?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwxfHxhbmNpZW50JTIwbWFwJTIwdHJhdmVsJTIwcGFyY2htZW50fGVufDB8fHx8MTc5Mzg1MTk5NHww&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1608924066819-930edc42986a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwyfHxhbmNpZW50JTIwbWFwJTIwdHJhdmVsJTIwcGFyY2htZW50fGVufDB8fHx8MTc5Mzg1MTk5NHww&ixlib=rb-4.1.0&q=85"
+      ],
+      "historical_portraits": [
+        "https://images.unsplash.com/photo-1699569679377-1eda6d20172d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNzl8MHwxfHNlYXJjaHwyfHxjaGhhdHJhcGF0aSUyMHNoaXZhamklMjBtYWhhcmFqJTIwcG9ydHJhaXQlMjBpbGx1c3RyYXRpb258ZW58MHx8fHwxNzkzODUxOTk0fDA&ixlib=rb-4.1.0&q=85"
+      ]
+    }
+  },
+  "icons": "Use lucide-react with thin stroke widths (strokeWidth={1.5}) to match the elegant editorial styling.",
+  "accessibility": {
+    "contrast": "Ensure Pure White on Dark Charcoal Grey and vice-versa passes AAA. Burnt Orange should primarily be used for large text or interactive elements (buttons) with White text.",
+    "aria": "Use semantic HTML (article, section, aside, nav). All interactive elements must have aria-labels.",
+    "testing": "All interactive and key informational elements MUST include a data-testid attribute (e.g., data-testid='explore-forts-btn')."
+  },
+  "instructions_to_main_agent": [
+    "You are building a premium editorial digital museum and travel platform. Do NOT use generic SaaS layouts. Rely on HTML/Tailwind for marketing/editorial sections, and use Shadcn only for complex interactives (forms, maps, admin).",
+    "Use Playfair Display for all main headings to provide a classic heritage feel.",
+    "Implement 'Lenis' for smooth scrolling.",
+    "Inject the 'architectural_sketches' images as subtle background layers or visual breaks between text-heavy sections to satisfy the 'more artistic Fort art' requirement.",
+    "Incorporate the Burnt Orange (#E87524) carefully - use it for CTAs, map markers, and highlighting key statistics or pull quotes.",
+    "Never use pure transparent backgrounds for headers or overlays that have content under them. Always use a blur or a solid color.",
+    "Use Leaflet (react-leaflet) for the interactive map. Style the map to look clean, possibly using a muted or grayscale map tile layer to let the Burnt Orange markers pop.",
+    "Ensure the Admin dashboard feels distinctly functional (dense, charcoal/white) compared to the public-facing editorial pages.",
+    "Do NOT center-align paragraphs. Left-align for editorial readability.",
+    "Include 'data-testid' on all buttons, links, and major components."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "Do not converge toward generic outputs. Avoid the 'AI slop' aesthetic.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "Use glass-morphism effects with backdrop filters where appropriate.",
+    "DO NOT apply universal transition (transition: all). Target specific properties.",
+    "DO NOT center align the app container (.App { text-align: center; }).",
+    "Always use modern button styles, specifically sharp rectangular buttons for this editorial design.",
+    "NEVER use AI assistant Emoji characters.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects.",
+    "Use 2-3x more spacing than feels comfortable.",
+    "Prioritize using pre-existing components from src/components/ui.",
+    "Use sonner for toasts.",
+    "All .js files should follow these guidelines (avoid .tsx as the project uses .js)."
+  ]
+}

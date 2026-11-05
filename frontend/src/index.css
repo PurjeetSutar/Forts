@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Manrope:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --ink: #252525;
+    --saffron: #E87524;
+    --saffron-dark: #cf661d;
+    --paper: #FFFFFF;
+    --mist: #F7F5F2;
+    --line: #E5E5E5;
+}
+
+html { scroll-behavior: auto; }
+body {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--saffron); color: #fff; }
+
+.font-display { font-family: 'Playfair Display', serif; }
+.eyebrow { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; font-weight: 600; }
+
+.grain::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .06; z-index: 1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.link-reveal { background-image: linear-gradient(var(--saffron), var(--saffron)); background-size: 0% 1px; background-repeat: no-repeat; background-position: 0 100%; transition: background-size .4s ease; }
+.link-reveal:hover { background-size: 100% 1px; }
+
+.img-zoom img { transition: transform 1.2s cubic-bezier(.2,.7,.2,1), filter .8s ease; }
+.img-zoom:hover img { transform: scale(1.06); }
+
+.dropcap::first-letter { font-family: 'Playfair Display', serif; float: left; font-size: 4.2rem; line-height: .85; padding: .35rem .6rem 0 0; color: var(--saffron); font-weight: 700; }
+
+.art-wash { mix-blend-mode: multiply; }
+
+.leaflet-container { font-family: 'Manrope', sans-serif; background: #f3f1ee; }
+.leaflet-tile-pane { filter: grayscale(1) contrast(.92) brightness(1.06); }
+.fort-pin { border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.35); }
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { border-radius: 0; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 0 0% 14.5%;
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 14.5%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 14.5%;
+        --primary: 0 0% 14.5%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 30 20% 96%;
+        --secondary-foreground: 0 0% 14.5%;
+        --muted: 30 15% 96%;
+        --muted-foreground: 0 0% 38%;
+        --accent: 25 81% 52%;
+        --accent-foreground: 0 0% 100%;
+        --destructive: 0 72% 45%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 0 0% 89.8%;
+        --input: 0 0% 85%;
+        --ring: 25 81% 52%;
+        --chart-1: 25 81% 52%;
+        --chart-2: 0 0% 14.5%;
+        --chart-3: 197 37% 34%;
+        --chart-4: 43 74% 56%;
+        --chart-5: 100 30% 35%;
+        --radius: 0.125rem;
+    }
+}
+
+@layer base {
+    * { @apply border-border; }
+    body { @apply bg-background text-foreground; }
+    h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
+}
+
+@layer base {
+    [data-debug-wrapper="true"] { display: contents !important; }
+    [data-debug-wrapper="true"] > * {
+        margin-left: inherit; margin-right: inherit; margin-top: inherit; margin-bottom: inherit;
+        padding-left: inherit; padding-right: inherit; padding-top: inherit; padding-bottom: inherit;
+        column-gap: inherit; row-gap: inherit; gap: inherit;
+        border-left-width: inherit; border-right-width: inherit; border-top-width: inherit; border-bottom-width: inherit;
+        border-left-style: inherit; border-right-style: inherit; border-top-style: inherit; border-bottom-style: inherit;
+        border-left-color: inherit; border-right-color: inherit; border-top-color: inherit; border-bottom-color: inherit;
+    }
+}
